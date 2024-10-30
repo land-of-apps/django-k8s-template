@@ -1,3 +1,6 @@
+#appmap
+appmap>=1.1.0.dev0
+
 # general  modules
 django >3.2,<3.3
 djangorestframework

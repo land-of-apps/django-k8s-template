@@ -9,8 +9,8 @@ RUN apk add --update --virtual .build-deps \
     build-base \
     postgresql-dev \
     python3-dev \
-    libpq
-
+    libpq \
+    git
 
 # install dependencies
 RUN pip install --upgrade pip
