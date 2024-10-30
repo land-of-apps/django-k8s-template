@@ -8,8 +8,19 @@ echo "Building Docker images"
 docker build -t petecheslock/django_app:$TAG -f ./dockerfiles/prod/django/Dockerfile .
 docker build -t petecheslock/nginx_app:$TAG -f ./dockerfiles/prod/nginx/Dockerfile .
 
-IMAGE_ID_DJANGO=$(docker images | grep petecheslock/django_app | head -n1 | awk '{print $3}')
-IMAGE_ID_NGINX=$(docker images | grep petecheslock/nginx_app | head -n1 | awk '{print $3}')
+# Improved Image ID Retrieval
+IMAGE_ID_DJANGO=$(docker inspect --format="{{.Id}}" petecheslock/django_app:$TAG)
+IMAGE_ID_NGINX=$(docker inspect --format="{{.Id}}" petecheslock/nginx_app:$TAG)
+
+# Debugging: Verify Image IDs
+echo "DJANGO Image ID: $IMAGE_ID_DJANGO"
+echo "NGINX Image ID: $IMAGE_ID_NGINX"
+
+# Error Handling: Check if Image IDs were retrieved
+if [ -z "$IMAGE_ID_DJANGO" ] || [ -z "$IMAGE_ID_NGINX" ]; then
+    echo "Failed to retrieve image IDs."
+    exit 1
+fi
 
 echo "Tagging latest images"
 docker tag $IMAGE_ID_DJANGO petecheslock/django_app:latest
