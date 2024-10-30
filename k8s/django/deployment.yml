@@ -18,10 +18,10 @@ spec:
     spec:
       containers:
         - name: django
-          image: petecheslock/django_app:latest
+          image: petecheslock/test_django_app:latest
           imagePullPolicy: IfNotPresent
           command: ["/bin/sh"]
-          args: ["-c", "python3 manage.py collectstatic --noinput && gunicorn --bind 0.0.0.0:8000 core.wsgi:application"]
+          args: ["-c", "python3 manage.py collectstatic --noinput && appmap-python gunicorn --bind 0.0.0.0:8000 core.wsgi:application"]
           ports:
             - containerPort: 8000
           envFrom:

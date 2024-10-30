@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: my-nginx
-        image: nginx_app:latest
+        image: petecheslock/nginx_app:latest
         imagePullPolicy: IfNotPresent
         resources:
           requests:
