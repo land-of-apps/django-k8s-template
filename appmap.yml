@@ -1,0 +1,3 @@
+appmap_dir: tmp/appmap
+language: python
+name: django-k8s-template
