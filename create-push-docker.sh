@@ -2,6 +2,11 @@
 
 set -e
 
+# Check if REPOSITORY_URL is set
+if [ -z "$REPOSITORY_URL" ]; then
+    echo "Please export the REPOSITORY_URL environment variable with your DockerHub username."
+    exit 1
+fi
 
 TAG=$(git rev-parse --short HEAD)
 
