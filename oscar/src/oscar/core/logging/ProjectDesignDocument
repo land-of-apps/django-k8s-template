@@ -1,0 +1,12 @@
+Please review the following code changes for the following aspects:
+
+1. **Input Validation**: Ensure all inputs are properly validated to prevent injection attacks and other vulnerabilities.
+2. **Character Set Compatibility**: Verify that character sets are consistent across interfaces to prevent data corruption.
+3. **Scalability of Data Types and Design**: Identify potential design limits, such as fixed-length fields that may not scale (e.g., 3-digit account numbers).
+4. **Resilient Design**: Check for the implementation of bulkheads, circuit breakers, and retries with progressive backoffs to enhance resilience.
+5. **Avoid Hardcoding**: Ensure database connections and other configurations are not hardcoded.
+6. **Dual Accounts for Secrets**: Verify the use of dual accounts for managing secrets to avoid lockouts and propagation issues.
+7. **Logging Practices**: Check for insufficient or excessive logging and ensure sensitive data is not logged.
+8. **Performance Considerations**: Identify potential performance bottlenecks and check for scenarios where external users could impact performance, such as denial of service attacks.
+
+Provide specific recommendations for any issues found.

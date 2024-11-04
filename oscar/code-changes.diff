@@ -1,0 +1,149 @@
+diff --git .gitignore .gitignore
+index 803ca1ef8..f9f28a6ef 100644
+--- .gitignore
++++ .gitignore
+@@ -59,3 +59,5 @@ settings_local.py
+ /sandbox/public/
+ /sandbox/whoosh_index/
+ /sandbox/logs/
++
++venv
+\ No newline at end of file
+diff --git requirements.txt requirements.txt
+index 0ec2e3efe..4f5d3a40c 100644
+--- requirements.txt
++++ requirements.txt
+@@ -17,6 +17,7 @@ redis>=3.5,<5.1
+ requests>=2.25,<3
+ uWSGI>=2.0.19
+ whitenoise>=5.2,<6.6
++django-simple-captcha==0.6.0
+ 
+ # Linting
+ pylint>=2.17.4
+@@ -29,7 +30,4 @@ ipdb>=0.13,<0.14
+ ipython>=7.12,<9
+ 
+ # Country data
+-pycountry
+-
+-# AppMap
+-appmap>=2.1.7
++pycountry
+\ No newline at end of file
+diff --git tests/_site/urls.py tests/_site/urls.py
+index c8cdd399d..9e421ab57 100644
+--- tests/_site/urls.py
++++ tests/_site/urls.py
+@@ -18,6 +18,10 @@ urlpatterns += i18n_patterns(
+     path("test/", TestView),
+ )
+ 
++urlpatterns += [
++    path('captcha/', include('captcha.urls')),
++]
++
+ urlpatterns += staticfiles_urlpatterns()
+ 
+ handler403 = "oscar.views.handler403"
+diff --git tests/functional/customer/test_auth.py tests/functional/customer/test_auth.py
+index 11292e252..7884b2d33 100644
+--- tests/functional/customer/test_auth.py
++++ tests/functional/customer/test_auth.py
+@@ -7,6 +7,7 @@ from django_webtest import WebTest
+ from oscar.core.compat import get_user_model
+ from oscar.test import factories
+ from oscar.test.testcases import WebTestCase
++from captcha.conf import settings as captcha_settings
+ 
+ User = get_user_model()
+ 
+@@ -96,6 +97,16 @@ class TestAnAuthenticatedUser(WebTestCase):
+ class TestAnAnonymousUser(WebTestCase):
+     is_anonymous = True
+ 
++    @classmethod
++    def setUpClass(cls):
++        super().setUpClass()
++        captcha_settings.CAPTCHA_TEST_MODE = True
++
++    @classmethod
++    def tearDownClass(cls):
++        super().tearDownClass()
++        captcha_settings.CAPTCHA_TEST_MODE = False
++
+     def assertCanLogin(self, email, password):
+         url = reverse("customer:login")
+         form = self.app.get(url).forms["login_form"]
+@@ -124,6 +135,8 @@ class TestAnAnonymousUser(WebTestCase):
+         form = self.app.get(url).forms["register_form"]
+         form["email"] = "terry@boom.com"
+         form["password1"] = form["password2"] = "hedgehog"
++        form.set("captcha_0", "PASSED", 1)
++        form.set("captcha_1", "PASSED", 1)
+         response = form.submit()
+         self.assertRedirectsTo(response, "customer:summary")
+ 
+@@ -132,6 +145,8 @@ class TestAnAnonymousUser(WebTestCase):
+         form = self.app.get(url).forms["register_form"]
+         form["email"] = "Terry@Boom.com"
+         form["password1"] = form["password2"] = "hedgehog"
++        form.set("captcha_0", "PASSED", 1)
++        form.set("captcha_1", "PASSED", 1)
+         form.submit()
+         user = User.objects.all()[0]
+         self.assertEqual(user.email, "Terry@boom.com")
+diff --git tests/functional/dashboard/test_partner.py tests/functional/dashboard/test_partner.py
+index 85d1b7469..69f81c959 100644
+--- tests/functional/dashboard/test_partner.py
++++ tests/functional/dashboard/test_partner.py
+@@ -2,11 +2,21 @@ from django.urls import reverse
+ 
+ from oscar.apps.partner import models
+ from oscar.test.testcases import WebTestCase
+-
++from captcha.conf import settings as captcha_settings
+ 
+ class TestPartnerDashboard(WebTestCase):
+     is_staff = True
+ 
++    @classmethod
++    def setUpClass(cls):
++        super().setUpClass()
++        captcha_settings.CAPTCHA_TEST_MODE = True
++
++    @classmethod
++    def tearDownClass(cls):
++        super().tearDownClass()
++        captcha_settings.CAPTCHA_TEST_MODE = False
++
+     def test_allows_a_partner_user_to_be_created(self):
+         partner = models.Partner.objects.create(name="Acme Ltd")
+ 
+@@ -20,6 +30,8 @@ class TestPartnerDashboard(WebTestCase):
+         form["email"] = "maik@gmail.com"
+         form["password1"] = "helloworld"
+         form["password2"] = "helloworld"
++        form["captcha_0"] = "PASSED"
++        form["captcha_1"] = "PASSED"
+         form.submit()
+ 
+         self.assertEqual(1, partner.users.all().count())
+diff --git tests/settings.py tests/settings.py
+index 5bfe30eb2..537855615 100644
+--- tests/settings.py
++++ tests/settings.py
+@@ -19,7 +19,13 @@ DATABASES = {
+     }
+ }
+ 
++CAPTCHA_IMAGE_SIZE = (150, 50)
++CAPTCHA_FONT_SIZE = 32
++CAPTCHA_LENGTH = 6
++CAPTCHA_TIMEOUT = 5
++
+ INSTALLED_APPS = [
++    "captcha",
+     "django.contrib.admin",
+     "django.contrib.auth",
+     "django.contrib.contenttypes",

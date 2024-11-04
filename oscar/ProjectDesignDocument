@@ -1,0 +1,10 @@
+Please review the following code changes for the following aspects:
+
+1. **Input Validation**: Ensure all inputs are properly validated to prevent injection attacks and other vulnerabilities.
+2. **Resilient Design**: Check for the implementation of bulkheads, circuit breakers, and retries with progressive backoffs to enhance resilience.
+3. **Avoid Hardcoding**: Ensure database connections and other configurations are not hardcoded.
+4. **Logging Practices**: Check for insufficient or excessive logging and ensure sensitive data is not logged.
+5. **Performance Considerations**: Identify potential performance bottlenecks and check for scenarios where external users could impact performance.
+6. **Denial of Service Considerations**: Check for scenarios where new features being implemented could be exploited and be at risk for a denial of service attack.
+
+Provide specific recommendations for any issues found.
