@@ -2,15 +2,16 @@
 
 set -e
 
+REPOSITORY_URL="petecheslock"
 TAG=$(git rev-parse --short HEAD)
 
 echo "Building Docker images"
-docker build -t petecheslock/test_django_app:$TAG -f ./dockerfiles/prod/django/Dockerfile .
-docker build -t petecheslock/nginx_app:$TAG -f ./dockerfiles/prod/nginx/Dockerfile .
+docker build -t $REPOSITORY_URL/test_django_oscar:$TAG -f ./dockerfiles/dev/django/Dockerfile .
+docker build -t $REPOSITORY_URL/nginx_app:$TAG -f ./dockerfiles/dev/nginx/Dockerfile .
 
 # Improved Image ID Retrieval
-IMAGE_ID_DJANGO=$(docker inspect --format="{{.Id}}" petecheslock/test_django_app:$TAG)
-IMAGE_ID_NGINX=$(docker inspect --format="{{.Id}}" petecheslock/nginx_app:$TAG)
+IMAGE_ID_DJANGO=$(docker inspect --format="{{.Id}}" $REPOSITORY_URL/test_django_oscar:$TAG)
+IMAGE_ID_NGINX=$(docker inspect --format="{{.Id}}" $REPOSITORY_URL/nginx_app:$TAG)
 
 # Debugging: Verify Image IDs
 echo "DJANGO Image ID: $IMAGE_ID_DJANGO"
@@ -23,13 +24,13 @@ if [ -z "$IMAGE_ID_DJANGO" ] || [ -z "$IMAGE_ID_NGINX" ]; then
 fi
 
 echo "Tagging latest images"
-docker tag $IMAGE_ID_DJANGO petecheslock/test_django_app:latest
-docker tag $IMAGE_ID_NGINX petecheslock/nginx_app:latest
+docker tag $IMAGE_ID_DJANGO $REPOSITORY_URL/test_django_oscar:latest
+docker tag $IMAGE_ID_NGINX $REPOSITORY_URL/nginx_app:latest
 
 echo "Pushing Docker image"
-docker push petecheslock/test_django_app:$TAG
-docker push petecheslock/test_django_app:latest
-docker push petecheslock/nginx_app:$TAG
-docker push petecheslock/nginx_app:latest
+docker push $REPOSITORY_URL/test_django_oscar:$TAG
+docker push $REPOSITORY_URL/test_django_oscar:latest
+docker push $REPOSITORY_URL/nginx_app:$TAG
+docker push $REPOSITORY_URL/nginx_app:latest
 
 echo "Done"

@@ -249,7 +249,7 @@ you can change the default configs and update each one.
 migrate database configs.
 ```shell
 kubectl get pods
-kubectl exec POD_NAME -- python manage.py migrate
+kubectl exec POD_NAME -- make sandbox
 ```
 
 **Note:** you need to have migrations included in your project and just do the migrate.

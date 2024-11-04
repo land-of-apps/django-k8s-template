@@ -6,7 +6,7 @@ metadata:
     app: django-config
 data:
   SECRET_KEY : "change_me"
-  DEBUG : "False"
+  DEBUG : "True"
   ALLOWED_HOSTS : "*"
   SITE_ID : "1"
   PGDB_ENGINE : "django.db.backends.postgresql"
