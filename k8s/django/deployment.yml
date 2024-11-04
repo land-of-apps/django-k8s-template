@@ -18,10 +18,10 @@ spec:
     spec:
       containers:
         - name: django
-          image: petecheslock/test_django_oscar:latest
-          imagePullPolicy: IfNotPresent
+          image: petecheslock/django_oscar:latest
+          imagePullPolicy: Always
           command: ["/bin/sh"]
-          args: ["-c", "python3 /usr/local/bin/appmap-python sandbox/manage.py runserver 0.0.0.0:8000"]
+          args: ["-c", "python /usr/local/bin/appmap-python sandbox/manage.py runserver 0.0.0.0:8000"]
           ports:
             - containerPort: 8000
           envFrom:

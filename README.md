@@ -148,6 +148,11 @@ for deployment purposes you need to build the docker image, so it can be used in
 there are two options here: 
 
 - build locally and push to docker hub
+
+Run `REPOSITORY_URL="petecheslock" ./create-push-docker.sh`
+to push the containers to dockerhub
+
+
 - build locally and use it
 
 the correct way is to build and push to docker hub but as we may be some restrictions just build and use it.
@@ -156,12 +161,12 @@ after that you can either decide to push it to hub or not.
 
 for building django app:
 ```shell
-docker build -t django_app -f ./dockerfiles/prod/django/Dockerfile .
+docker build -t django_app -f ./dockerfiles/dev/django/Dockerfile .
 ```
 
 and for nginx app:
 ```shell
-docker build -t nginx_app -f ./dockerfiles/prod/nginx/Dockerfile .
+docker build -t nginx_app -f ./dockerfiles/dev/nginx/Dockerfile .
 ```
 if you want to push it to the hub firstly, login to docker with the following command:
 ```shell
@@ -249,7 +254,7 @@ you can change the default configs and update each one.
 migrate database configs.
 ```shell
 kubectl get pods
-kubectl exec POD_NAME -- make sandbox
+kubectl exec POD_NAME --  python sandbox/manage.py migrate
 ```
 
 **Note:** you need to have migrations included in your project and just do the migrate.
