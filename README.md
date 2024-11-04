@@ -227,6 +227,12 @@ our main service is our django application which will be communicating with the 
 kubectl apply -f ./k8s/django/config-map.yml
 ```
 
+Run the minikube mount to mount local tmp/appmap into the minikube host **before** deploying the pod
+
+```
+minikube mount tmp/appmap:/appmap-host
+```
+
 after that you need to deploy the pod by the deployment:
 ```shell
 kubectl apply -f ./k8s/django/deployment.yml
@@ -242,6 +248,7 @@ you can change the default configs and update each one.
 
 migrate database configs.
 ```shell
+kubectl get pods
 kubectl exec POD_NAME -- python manage.py migrate
 ```
 
@@ -261,7 +268,7 @@ kubectl apply -f ./k8s/nginx/service.yml
 at the end you will end up having the all the needed services to run the whole application.
 
 ```shell
-C:\Users\AliBigdeli\Documents\GitHub\Django-Kubernetes-Template>kubectl get all
+$ kubectl get all
 NAME                           READY   STATUS    RESTARTS   AGE
 pod/django-5b74bd444-mskdm     1/1     Running   0          2m43s
 pod/my-nginx-c7bb68546-64q56   1/1     Running   0          25s
@@ -291,7 +298,11 @@ replicaset.apps/redis-67b95b7577     1         1         1       4m1s
 at the end you need to be able to see the website by opening your localhost on port 80
 
 
+Run the following to tunnel to the LB
 
+```
+minikube tunnel
+```
 
 
 ### deploy worker

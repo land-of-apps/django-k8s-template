@@ -38,11 +38,16 @@ spec:
           volumeMounts:
             - name: media-volume-mount
               mountPath: /usr/src/app/media
+            - name: appmap-pvc
+              mountPath: /usr/src/app/tmp/appmap
 
       volumes:
         - name: media-volume-mount
           persistentVolumeClaim:
             claimName: media-pvc
+        - name: appmap-pvc
+          hostPath:
+            path: /appmap-host
   
 ---
 
